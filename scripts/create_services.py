@@ -1,0 +1,335 @@
+import json
+import os
+
+os.makedirs('data', exist_ok=True)
+
+# Comprehensive services metadata
+services_info = {
+    "Birth Certificate": {
+        "icon": "fa-baby",
+        "category": "Vital Records",
+        "description": "Official government issuance certifying the birth of an individual.",
+        "authority": "Local Municipal Corporation / Gram Panchayat / Civil Registration System (CRS)",
+        "documents": [
+            "Proof of birth from Hospital / Discharge Summary",
+            "Parents' Identity Proof (Aadhaar / Voter ID / Passport)",
+            "Parents' Marriage Certificate (if applicable)",
+            "Address Proof of Parents"
+        ],
+        "steps": [
+            "Submit institutional birth report within 21 days to local registrar",
+            "Fill Form 1 (Birth Report) physically or online on CRS portal (crsorgi.gov.in)",
+            "Upload/verify parent identity and address credentials",
+            "Receive digitally signed Birth Certificate with QR verification code"
+        ],
+        "timeline": "3 to 7 working days",
+        "fee": "Free within 21 days; Nominal late fee thereafter",
+        "portal_url": "https://crsorgi.gov.in"
+    },
+    "Death Certificate": {
+        "icon": "fa-scroll",
+        "category": "Vital Records",
+        "description": "Official declaration recording date, time and reason of an individual's demise.",
+        "authority": "Municipal Health Department / Gram Panchayat / CRS",
+        "documents": [
+            "Hospital Demise Report or Cremation/Burial Ground receipt",
+            "Deceased's Identity Card (Aadhaar / PAN / Ration Card)",
+            "Applicant's ID and Relationship Proof",
+            "Post-mortem / Police NOC (for accidental or unnatural deaths)"
+        ],
+        "steps": [
+            "Notify local registrar within 21 days of demise",
+            "Submit death intimation along with medical certificate of death",
+            "Verification by health officer or revenue inspector",
+            "Download registered Death Certificate online"
+        ],
+        "timeline": "3 to 7 working days",
+        "fee": "Free within 21 days; Minimal fee afterwards",
+        "portal_url": "https://crsorgi.gov.in"
+    },
+    "Ration Card": {
+        "icon": "fa-bowl-rice",
+        "category": "Food & Civil Supplies",
+        "description": "Subsidized food grain entitlement and household identity document (NFSA / PDS).",
+        "authority": "Department of Food, Civil Supplies & Consumer Affairs",
+        "documents": [
+            "Aadhaar cards of all family members",
+            "Family group photograph",
+            "Income certificate / BPL/AAY eligibility proof",
+            "Proof of residence (Electricity bill / Rent agreement)",
+            "Bank passbook details of the head of family (female head preferred)"
+        ],
+        "steps": [
+            "Visit State Food & Civil Supplies portal or local MeeSeva/CSC/e-Seva centre",
+            "Fill NFSA New Ration Card Application Form",
+            "Attach member Aadhaar numbers and biometric linkage",
+            "Field verification by Food Inspector",
+            "Issuance of Digital Smart Ration Card / e-Ration Card"
+        ],
+        "timeline": "15 to 30 days",
+        "fee": "Rs. 20 - Rs. 50 (Nominal card printing fee)",
+        "portal_url": "https://nfsa.gov.in"
+    },
+    "Passport": {
+        "icon": "fa-passport",
+        "category": "External Affairs",
+        "description": "Official travel authorization credential issued by the Government of India.",
+        "authority": "Passport Seva Kendra (PSK) / Ministry of External Affairs",
+        "documents": [
+            "Proof of Date of Birth (Birth Certificate / School Leaving / Matriculation)",
+            "Proof of Present Address (Aadhaar / Bank Statement / Utility Bill)",
+            "Proof of Non-ECR status (if matriculated or higher)",
+            "Annexures (if applicable for minors/name changes)"
+        ],
+        "steps": [
+            "Register on Passport Seva Online Portal (passportindia.gov.in)",
+            "Fill Application Form for Fresh / Renewal Passport",
+            "Pay fee online and schedule appointment at nearest PSK / POPSK",
+            "Visit PSK for biometric capture and document scrutiny",
+            "Police verification at your local jurisdictional police station",
+            "Passport dispatched via Speed Post"
+        ],
+        "timeline": "Normal: 15-20 days; Tatkaal: 1-3 days",
+        "fee": "Rs. 1,500 (36 pages) / Rs. 2,000 (60 pages) / Tatkaal extra",
+        "portal_url": "https://passportindia.gov.in"
+    },
+    "Driving Licence": {
+        "icon": "fa-id-card",
+        "category": "Transport",
+        "description": "Official permit legalizing operation of motor vehicles on public roads.",
+        "authority": "Regional Transport Office (RTO) / MoRTH / Sarathi Parivahan",
+        "documents": [
+            "Learner's Licence copy (completed minimum 30 days)",
+            "Age proof (Birth Certificate / 10th marksheet / Aadhaar)",
+            "Address proof (Aadhaar / Passport / Voter ID)",
+            "Medical Certificate Form 1A (for commercial or applicants > 40 yrs)",
+            "Form 5 from recognized Driving School (commercial/heavy vehicles)"
+        ],
+        "steps": [
+            "Apply online at Sarathi Parivahan portal (parivahan.gov.in)",
+            "Pass computerized Learner Licence (LL) test",
+            "Book driving skill test slot after 30 days of LL issuance",
+            "Appear at RTO track with vehicle for physical driving test",
+            "DL card printed and dispatched after clearance"
+        ],
+        "timeline": "7 to 14 days after driving test",
+        "fee": "Rs. 200 (Test fee) + Rs. 200 (DL issuance fee)",
+        "portal_url": "https://parivahan.gov.in"
+    },
+    "Voter ID": {
+        "icon": "fa-check-to-slot",
+        "category": "Electoral Services",
+        "description": "Electors Photo Identity Card (EPIC) ensuring democratic voting franchise.",
+        "authority": "Election Commission of India (ECI) / Chief Electoral Officer",
+        "documents": [
+            "Passport-sized color photograph",
+            "Age proof (18 years or older as on qualifying date)",
+            "Address proof of present ordinary residence"
+        ],
+        "steps": [
+            "Log into ECI Voters Service Portal (voters.eci.gov.in)",
+            "Fill Form 6 for fresh voter registration",
+            "Upload photo, age, and residence credentials",
+            "Booth Level Officer (BLO) performs field verification",
+            "Digital e-EPIC download + physical speed-post delivery of PVC card"
+        ],
+        "timeline": "15 to 30 days",
+        "fee": "Free of charge",
+        "portal_url": "https://voters.eci.gov.in"
+    },
+    "Income Certificate": {
+        "icon": "fa-coins",
+        "category": "Revenue & Welfare",
+        "description": "Revenue department certification of annual household earnings.",
+        "authority": "Tahsildar / Sub-Divisional Magistrate (SDM) / Revenue Dept",
+        "documents": [
+            "Salary Slips / Form 16 / ITR acknowledgement (employed)",
+            "Affidavit declaring agricultural/unorganized income",
+            "Aadhaar card & Residence Proof",
+            "Property or Land holding records (if applicable)"
+        ],
+        "steps": [
+            "Submit application on State e-District portal or local revenue counter",
+            "Upload income proofs and signed self-declaration affidavit",
+            "Village Revenue Officer (VRO) / Revenue Inspector verification",
+            "Tahsildar digitally signs and issues certificate"
+        ],
+        "timeline": "7 to 15 days",
+        "fee": "Rs. 15 - Rs. 50 (Service charge)",
+        "portal_url": "https://services.india.gov.in"
+    },
+    "Community Certificate": {
+        "icon": "fa-people-group",
+        "category": "Social Justice & Welfare",
+        "description": "Official caste/community authentication certificate (SC/ST/OBC/EWS).",
+        "authority": "Revenue Department / District Magistrate / Tahsildar",
+        "documents": [
+            "Father's or paternal relative's Community Certificate",
+            "School Transfer Certificate (TC) showing caste entry",
+            "Aadhaar card of applicant and parents",
+            "Proof of residence within state for specified baseline year"
+        ],
+        "steps": [
+            "Apply via State e-District portal or Citizen Service Centre (CSC)",
+            "Attach ancestry documents and genealogical link proof",
+            "Enquiry and field scrutiny by Revenue Inspector",
+            "Issuance of QR-coded Community Certificate"
+        ],
+        "timeline": "15 to 30 days",
+        "fee": "Rs. 20 - Rs. 60",
+        "portal_url": "https://services.india.gov.in"
+    },
+    "Residence Certificate": {
+        "icon": "fa-house-chimney",
+        "category": "Revenue Administration",
+        "description": "Domicile / Native certificate proving continuous legal residence in a state.",
+        "authority": "Tahsildar / Sub-Divisional Officer (SDO) / District Administration",
+        "documents": [
+            "Residential proof of continuous stay (10-15 years as per state norms)",
+            "School study certificates from 1st to 10th standard",
+            "Land ownership/Property tax / Ration card records",
+            "Aadhaar card and self-declaration affidavit"
+        ],
+        "steps": [
+            "Register on e-District / State Citizen Portal",
+            "Submit proof of schooling and residency history",
+            "Local Revenue Officer confirms domicile authenticity",
+            "Certificate issued with digital signature"
+        ],
+        "timeline": "7 to 14 days",
+        "fee": "Rs. 20 - Rs. 50",
+        "portal_url": "https://services.india.gov.in"
+    },
+    "Water Bill": {
+        "icon": "fa-droplet",
+        "category": "Utilities & Urban Services",
+        "description": "Public water supply charges assessment, billing payment, and connection services.",
+        "authority": "Municipal Water Supply & Sewerage Board / Jal Board",
+        "documents": [
+            "Consumer Connection Number (CAN / Consumer ID)",
+            "Previous paid receipt (for verification)",
+            "Property ownership document (for new water connection/meter change)"
+        ],
+        "steps": [
+            "Visit Municipal Water Board portal or BBPS (Bharat Bill Payment System)",
+            "Enter Consumer ID / Connection Number",
+            "Fetch outstanding bill dues and meter readings",
+            "Pay via UPI, NetBanking, Debit/Credit Card or CSC kiosk",
+            "Instant digital payment receipt with transaction reference"
+        ],
+        "timeline": "Instant payment receipt; 7 days for new tap connection",
+        "fee": "As per metered consumption slab",
+        "portal_url": "https://www.bharatbillpay.com"
+    },
+    "Electricity Bill": {
+        "icon": "fa-bolt",
+        "category": "Utilities & Power",
+        "description": "Power distribution charges management, meter readings, and tariff settlement.",
+        "authority": "State DISCOM (Power Distribution Corporation) / Electricity Board",
+        "documents": [
+            "Consumer Account Number (CA Number / Service Connection No.)",
+            "Registered Mobile Number",
+            "Identity Proof & Ownership/Rental agreement (for transfer or new meter)"
+        ],
+        "steps": [
+            "Access State DISCOM online portal, mobile app or BBPS gateway",
+            "Enter CA Number / Subdivision Code",
+            "Review consumed units, tariff subsidy, and total bill payable",
+            "Pay securely using UPI / Card / NetBanking",
+            "Download e-Receipt instantly"
+        ],
+        "timeline": "Instant settlement",
+        "fee": "Billed monthly/bi-monthly as per tariff units",
+        "portal_url": "https://www.bharatbillpay.com"
+    },
+    "Property Tax": {
+        "icon": "fa-building-columns",
+        "category": "Municipal Finance",
+        "description": "Annual civic levy assessed on residential or commercial real estate assets.",
+        "authority": "City Municipal Corporation / Municipality / Urban Local Body (ULB)",
+        "documents": [
+            "Property Identification Number (PID / Khata / Assessment Number)",
+            "Previous Year Tax Receipt",
+            "Sale Deed / Title Deed / Building approval plan",
+            "Occupancy Certificate (for newly constructed buildings)"
+        ],
+        "steps": [
+            "Access City Municipal Corporation tax portal",
+            "Input Property ID (PID) / Owner Name / Ward number",
+            "View calculated property tax (built-up area, usage type, rebate)",
+            "Pay tax online before due date to claim rebate discount",
+            "Generate Municipal Property Tax Receipt and SAS acknowledgement"
+        ],
+        "timeline": "Instant online payment receipt",
+        "fee": "Calculated based on Unit Area Value (UAV) or Capital Value",
+        "portal_url": "https://services.india.gov.in"
+    },
+    "Complaint Registration": {
+        "icon": "fa-bullhorn",
+        "category": "Public Grievance",
+        "description": "Centralized citizen grievance redressal mechanism for public services.",
+        "authority": "CPGRAMS / CM Helpline / Municipal Grievance Cell",
+        "documents": [
+            "Complainant Contact Details (Name, Phone, Email, Address)",
+            "Details of affected service or civic authority",
+            "Supporting photographs, complaint letter, or previous reference numbers"
+        ],
+        "steps": [
+            "Access CPGRAMS (pgportal.gov.in) or State CM Helpline (e.g., 1076 / 1905)",
+            "Select relevant Ministry, Department or Local Authority",
+            "Describe the grievance clearly (up to 2000 characters) and upload evidence",
+            "Submit and receive a unique Grievance Registration Number",
+            "Track resolution progress and provide feedback upon closure"
+        ],
+        "timeline": "Action initiated within 48 hours; resolution in 15-30 days",
+        "fee": "Free of cost",
+        "portal_url": "https://pgportal.gov.in"
+    },
+    "Application Status": {
+        "icon": "fa-magnifying-glass-chart",
+        "category": "Citizen Services Tracking",
+        "description": "Unified tracker for real-time verification of any submitted public service application.",
+        "authority": "Integrated State e-District / National Citizen Portal",
+        "documents": [
+            "Application / Reference / Acknowledgement Number",
+            "Registered Mobile Number (for OTP verification)"
+        ],
+        "steps": [
+            "Select the service type or issuing department",
+            "Enter Application Tracking ID received on SMS or receipt",
+            "Verify with OTP if requested",
+            "View live application workflow stage (Inward, Inspection, Approval, Dispatched)",
+            "Download approved certificate or inspect clarification query"
+        ],
+        "timeline": "Real-time query output",
+        "fee": "Free of cost",
+        "portal_url": "https://services.india.gov.in"
+    },
+    "Government Schemes": {
+        "icon": "fa-hand-holding-heart",
+        "category": "Social Welfare & Subsidies",
+        "description": "National and state flagship beneficiary schemes, financial support & pensions.",
+        "authority": "myScheme Portal / Direct Benefit Transfer (DBT) Mission",
+        "documents": [
+            "Aadhaar Card (linked to active bank account for DBT)",
+            "Income and Caste Certificates (if affirmative scheme)",
+            "Land records / Farmer book / Student enrollment ID (domain-specific)",
+            "Bank Account Passbook with IFSC code"
+        ],
+        "steps": [
+            "Visit myScheme.gov.in or State DBT portal",
+            "Enter demographic criteria (age, state, gender, income, category)",
+            "Explore 1500+ eligible Central and State welfare programs",
+            "Apply directly through official scheme linkage or Jan Seva Kendra",
+            "Monitor Direct Benefit Transfer (DBT) disbursement into bank account"
+        ],
+        "timeline": "Varies by scheme cycle",
+        "fee": "Free to apply",
+        "portal_url": "https://www.myscheme.gov.in"
+    }
+}
+
+with open('data/services_info.json', 'w', encoding='utf-8') as f:
+    json.dump(services_info, f, indent=2, ensure_ascii=False)
+
+print("Saved services_info.json successfully!")

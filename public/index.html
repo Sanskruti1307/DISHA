@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DISHA (दिशा) | Multilingual Citizen Services & AI Helpdesk</title>
+  <meta name="description" content="DISHA - National Multilingual Citizen Services Portal & AI Assistant. Instant official assistance for Birth, Death, Ration Card, Passport, Driving Licence, Voter ID, Utilities across 14 Indian languages.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-theme="light">
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-ribbon"></div>
+
+  <!-- Accessibility & Government Top Bar -->
+  <header class="top-bar">
+    <div class="gov-info">
+      <span><i class="fa-solid fa-flag"></i> Government of India Citizen Tech Initiative</span>
+      <span>•</span>
+      <span><i class="fa-solid fa-shield-halved"></i> Verified Public Services Knowledge Base</span>
+    </div>
+    <div class="accessibility-tools">
+      <span>Font Size:</span>
+      <button class="acc-btn" id="fontDecBtn" title="Decrease Font">A-</button>
+      <button class="acc-btn" id="fontResetBtn" title="Reset Font">A</button>
+      <button class="acc-btn" id="fontIncBtn" title="Increase Font">A+</button>
+      <span>•</span>
+      <button class="acc-btn" id="contrastBtn" title="Toggle High Contrast"><i class="fa-solid fa-circle-half-stroke"></i> Contrast</button>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="navbar">
+    <div class="brand" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+      <div class="brand-emblem">
+        <i class="fa-solid fa-compass"></i>
+      </div>
+      <div class="brand-text">
+        <h1>DISHA <span class="highlight">दिशा</span></h1>
+        <p>Multilingual Citizen Services & AI Helpdesk</p>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#services" class="nav-link">Citizen Services</a></li>
+      <li><a href="#tracker" class="nav-link">Track Application</a></li>
+      <li><a href="#dataset" class="nav-link">Knowledge Base (3,000 Qs)</a></li>
+      <li><a href="#grievance" class="nav-link">File Request</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <select class="lang-selector" id="topLangSelector" aria-label="Select Language">
+        <option value="All">🌐 All Languages (14)</option>
+        <option value="Telugu">తెలుగు (Telugu)</option>
+        <option value="Hindi">हिन्दी (Hindi)</option>
+        <option value="Tamil">தமிழ் (Tamil)</option>
+        <option value="English">English</option>
+        <option value="Assamese">অসমীয়া (Assamese)</option>
+        <option value="Urdu">اردو (Urdu)</option>
+        <option value="Malayalam">മലയാളം (Malayalam)</option>
+        <option value="Sanskrit">संस्कृतम् (Sanskrit)</option>
+        <option value="Bengali">বাংলা (Bengali)</option>
+        <option value="Odia">ଓଡ଼ିଆ (Odia)</option>
+        <option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+        <option value="Gujarati">ગુજરાતી (Gujarati)</option>
+        <option value="Marathi">मराठी (Marathi)</option>
+        <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+      </select>
+
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+
+      <button class="btn-primary" onclick="openAssistantModal()">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Ask Disha AI
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-bolt-lightning"></i> AI-Powered National Public Services Hub
+    </div>
+    <h2>How Can <span class="gradient-text">DISHA</span> Assist You Today?</h2>
+    <p class="hero-subtitle">
+      Instant official guidance, required documents, application steps, and portal access for 15 essential citizen services across 14 Indian languages.
+    </p>
+
+    <!-- Omnibar Search -->
+    <div class="search-container">
+      <form id="heroSearchForm" class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input 
+          type="text" 
+          id="heroSearchInput" 
+          placeholder="Ask in your language... e.g., 'పాస్‌పోర్ట్ పొందే ప్రక్రియ ఏమిటి?', 'राशन कार्ड कैसे प्राप्त करें?', 'Water bill steps'..." 
+          autocomplete="off"
+        >
+        <button type="button" class="voice-btn" id="voiceMicBtn" title="Speak your query">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+        <button type="submit" class="search-btn">
+          <span>Search</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Quick Query Suggestions Chips -->
+    <div class="quick-queries">
+      <span class="quick-label">Try Asking:</span>
+      <div class="query-chip" data-q="నీటి బిల్లు కోసం ఏమి కావాలి?" data-lang="Telugu">
+        <span class="lang-tag">Telugu</span> నీటి బిల్లు కోసం ఏమి కావాలి?
+      </div>
+      <div class="query-chip" data-q="पाಸ್‌పోర్ట్ పొందే ప్రక్రియ ఏమిటి?" data-lang="Telugu">
+        <span class="lang-tag">Telugu</span> పాస్‌పోర్ట్ పొందే ప్రక్రియ?
+      </div>
+      <div class="query-chip" data-q="पानी का बिल की सेवा कहाँ मिलेगी?" data-lang="Hindi">
+        <span class="lang-tag">Hindi</span> पानी का बिल सेवा कहाँ मिलेगी?
+      </div>
+      <div class="query-chip" data-q="How do I apply for a birth certificate?" data-lang="English">
+        <span class="lang-tag">English</span> Birth certificate application?
+      </div>
+      <div class="query-chip" data-q="রেশন কার্ড পাওয়ার প্রক্রিয়া কী?" data-lang="Bengali">
+        <span class="lang-tag">Bengali</span> রেশন কার্ড পাওয়ার প্রক্রিয়া?
+      </div>
+      <div class="query-chip" data-q="இறப்பு சான்றிதழ்க்கு எப்படி விண்ணப்பிப்பது?" data-lang="Tamil">
+        <span class="lang-tag">Tamil</span> இறப்பு சான்றிதழ் விண்ணப்பம்?
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Query Result Box -->
+  <section class="ai-result-section" id="aiResultSection">
+    <div class="ai-card">
+      <div class="ai-card-header">
+        <div class="ai-intent-badge">
+          <i class="fa-solid fa-sparkles"></i> Intent: <span id="resIntentName">Service Intent</span>
+        </div>
+        <div style="font-size: 0.85rem; opacity: 0.9;">
+          Confidence: <strong id="resConfidence">95%</strong> • Matched: <span id="resLang">Language</span>
+        </div>
+      </div>
+
+      <div class="ai-card-body">
+        <div class="ai-answer-box">
+          <div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent); font-weight: 800; margin-bottom: 4px;">Official Guidance</div>
+            <p id="resAnswerText">Official response will display here.</p>
+          </div>
+          <button class="tts-speaker-btn" id="ttsSpeakBtn" title="Listen to Answer (Text-to-Speech)">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+        </div>
+
+        <div class="ai-info-grid">
+          <div class="ai-info-block">
+            <h4><i class="fa-solid fa-file-lines"></i> Mandatory Documents</h4>
+            <ul id="resDocsList">
+              <!-- Injected via JS -->
+            </ul>
+          </div>
+          <div class="ai-info-block">
+            <h4><i class="fa-solid fa-list-check"></i> Application Steps</h4>
+            <ul id="resStepsList">
+              <!-- Injected via JS -->
+            </ul>
+          </div>
+        </div>
+
+        <div class="ai-info-block" style="margin-bottom: 20px;">
+          <h4><i class="fa-solid fa-circle-question"></i> Related Citizen Queries in Database</h4>
+          <div id="resRelatedList" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <div class="ai-card-footer">
+          <div>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Issuing Authority:</span>
+            <strong id="resAuthority" style="font-size: 0.9rem; color: var(--text-main); margin-left: 6px;">Revenue / Municipal Dept</strong>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="#" target="_blank" id="resPortalBtn" class="portal-link-btn">
+              <span>Go to Official Portal</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Stats Row -->
+  <div class="stats-banner">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num" id="statRecords">3,000</div>
+        <div class="stat-desc">Multilingual Q&A Records</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="statLanguages">14</div>
+        <div class="stat-desc">Official Indian Languages</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="statServices">15</div>
+        <div class="stat-desc">Key Public Civic Services</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="statResolution">99.4%</div>
+        <div class="stat-desc">AI Intent Resolution Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services Directory Section -->
+  <section class="section-container" id="services">
+    <div class="section-header">
+      <div class="section-title">
+        <h3>Civic Services Directory</h3>
+        <p>Explore step-by-step application walkthroughs, document requirements, and portals.</p>
+      </div>
+
+      <div class="filter-tabs" id="categoryFilterTabs">
+        <button class="tab-btn active" data-category="All">All Services</button>
+        <button class="tab-btn" data-category="Vital Records">Vital Records</button>
+        <button class="tab-btn" data-category="Utilities">Utilities & Power</button>
+        <button class="tab-btn" data-category="Welfare">Welfare & Schemes</button>
+        <button class="tab-btn" data-category="Transport">Transport & Identity</button>
+      </div>
+    </div>
+
+    <div class="services-grid" id="servicesGrid">
+      <!-- Injected dynamically via JS -->
+    </div>
+  </section>
+
+  <!-- Application Status & Grievance Tracker -->
+  <section class="section-container" id="tracker">
+    <div class="section-header">
+      <div class="section-title">
+        <h3>Application & Grievance Tracker</h3>
+        <p>Verify live stage, approval status, and departmental progression for any reference number.</p>
+      </div>
+    </div>
+
+    <div class="tracker-card">
+      <form id="trackForm" class="tracker-search-row">
+        <input 
+          type="text" 
+          id="trackInput" 
+          class="tracker-input" 
+          placeholder="Enter Application or Grievance Tracking ID (e.g., DSH-8492-710, DSH-3104-582, or any custom ID)..." 
+          value="DSH-8492-710"
+          required
+        >
+        <button type="submit" class="btn-primary" style="border-radius: var(--radius-md); padding: 12px 24px;">
+          <i class="fa-solid fa-route"></i> Track Status
+        </button>
+      </form>
+
+      <div id="trackerResultBox">
+        <!-- Live timeline inserted by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Submit Service Request / Grievance Section -->
+  <section class="section-container" id="grievance">
+    <div class="section-header">
+      <div class="section-title">
+        <h3>Citizen Service Request / Grievance Desk</h3>
+        <p>Directly submit a request for certificate verification, billing dispute, or civic grievance.</p>
+      </div>
+    </div>
+
+    <div class="tracker-card" style="max-width: 800px; margin: 0 auto;">
+      <form id="submitAppForm">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Service Category *</label>
+            <select id="formService" class="tracker-input" style="width: 100%;" required>
+              <option value="">Select Service...</option>
+              <option value="Birth Certificate">Birth Certificate</option>
+              <option value="Death Certificate">Death Certificate</option>
+              <option value="Ration Card">Ration Card</option>
+              <option value="Passport">Passport</option>
+              <option value="Driving Licence">Driving Licence</option>
+              <option value="Voter ID">Voter ID</option>
+              <option value="Income Certificate">Income Certificate</option>
+              <option value="Community Certificate">Community Certificate</option>
+              <option value="Residence Certificate">Residence Certificate</option>
+              <option value="Water Bill">Water Bill</option>
+              <option value="Electricity Bill">Electricity Bill</option>
+              <option value="Property Tax">Property Tax</option>
+              <option value="Complaint Registration">Complaint Registration</option>
+              <option value="Government Schemes">Government Schemes</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Preferred Language *</label>
+            <select id="formLanguage" class="tracker-input" style="width: 100%;" required>
+              <option value="English">English</option>
+              <option value="Hindi">हिन्दी (Hindi)</option>
+              <option value="Telugu">తెలుగు (Telugu)</option>
+              <option value="Tamil">தமிழ் (Tamil)</option>
+              <option value="Bengali">বাংলা (Bengali)</option>
+              <option value="Marathi">मराठी (Marathi)</option>
+              <option value="Gujarati">ગુજરાતી (Gujarati)</option>
+              <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+              <option value="Malayalam">മലയാളം (Malayalam)</option>
+              <option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+              <option value="Odia">ଓଡ଼ିଆ (Odia)</option>
+              <option value="Assamese">অসমীয়া (Assamese)</option>
+              <option value="Urdu">اردو (Urdu)</option>
+              <option value="Sanskrit">संस्कृतम् (Sanskrit)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Applicant Full Name *</label>
+            <input type="text" id="formName" class="tracker-input" style="width: 100%;" placeholder="e.g. Sanskruti Rao" required>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Mobile Number</label>
+            <input type="tel" id="formMobile" class="tracker-input" style="width: 100%;" placeholder="10-digit Mobile Number">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Description / Grievance Details *</label>
+          <textarea id="formDetails" class="tracker-input" style="width: 100%; height: 90px; resize: vertical;" placeholder="Describe your requirement, issue, or reference numbers..." required></textarea>
+        </div>
+
+        <div style="text-align: right;">
+          <button type="submit" class="btn-primary" style="padding: 12px 28px;">
+            <i class="fa-solid fa-paper-plane"></i> Submit Request & Generate Tracking ID
+          </button>
+        </div>
+      </form>
+
+      <div id="submitSuccessCard" style="display: none; margin-top: 24px; padding: 20px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); border-radius: var(--radius-md);">
+        <h4 style="color: var(--success); margin-bottom: 8px;"><i class="fa-solid fa-circle-check"></i> Request Registered Successfully!</h4>
+        <p style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 12px;">Your application has been received and routed to the concerned administrative department.</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+          <span>Tracking ID: <strong id="newTrackId" style="color: var(--primary); font-size: 1.1rem;"></strong></span>
+          <button class="test-query-btn" onclick="copyTrackingId()"><i class="fa-solid fa-copy"></i> Copy ID</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3,000 Questions Dataset Knowledge Base Section -->
+  <section class="section-container" id="dataset">
+    <div class="section-header">
+      <div class="section-title">
+        <h3>Multilingual Knowledge Base (3,000 Queries)</h3>
+        <p>Interactive repository of citizen queries across 14 languages extracted from real public interaction data.</p>
+      </div>
+      <div>
+        <button class="test-query-btn" onclick="exportData('csv')" style="padding: 8px 16px;">
+          <i class="fa-solid fa-download"></i> Export CSV
+        </button>
+        <button class="test-query-btn" onclick="exportData('json')" style="padding: 8px 16px; margin-left: 8px;">
+          <i class="fa-solid fa-file-code"></i> Export JSON
+        </button>
+      </div>
+    </div>
+
+    <div class="dataset-box">
+      <div class="dataset-controls">
+        <div class="control-group">
+          <input 
+            type="text" 
+            id="tableSearchInput" 
+            class="tracker-input" 
+            style="padding: 8px 14px; width: 260px;" 
+            placeholder="Search questions or keywords..."
+          >
+          <select id="tableLangFilter" class="select-control">
+            <option value="All">All Languages (14)</option>
+          </select>
+          <select id="tableIntentFilter" class="select-control">
+            <option value="All">All Intents (15)</option>
+          </select>
+        </div>
+        <div style="font-size: 0.88rem; color: var(--text-muted);">
+          Showing <strong id="datasetTotalCount">0</strong> records
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th style="width: 70px;">ID</th>
+              <th>Question (Native Script)</th>
+              <th style="width: 130px;">Language</th>
+              <th style="width: 170px;">Intent</th>
+              <th>Official Expected Answer</th>
+              <th style="width: 90px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="datasetTableBody">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <div id="pageInfoText">Page 1 of 150</div>
+        <div class="page-buttons">
+          <button class="page-btn" id="prevPageBtn"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+          <button class="page-btn" id="nextPageBtn">Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Detail Modal -->
+  <div class="modal-overlay" id="serviceModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle"><i class="fa-solid fa-circle-info"></i> Service Title</h3>
+        <button class="close-modal-btn" onclick="closeServiceModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Assistant Chat Window -->
+  <button class="chat-drawer-trigger" id="chatTriggerBtn" onclick="toggleChatWindow()" title="Chat with Disha AI">
+    <i class="fa-solid fa-comment-dots"></i>
+    <span class="chat-badge-dot"></span>
+  </button>
+
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #fff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.95rem; font-weight: 700;">Disha AI Assistant</h4>
+          <span style="font-size: 0.72rem; opacity: 0.85;">14 Languages Active</span>
+        </div>
+      </div>
+      <button onclick="toggleChatWindow()" style="background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;">&times;</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg bot">
+        नमस्ते / Hello! I am Disha, your multilingual citizen assistant. You can ask me in Telugu, Hindi, Tamil, Bengali, or any of our 14 supported languages about any government service, document, or bill!
+      </div>
+    </div>
+
+    <form id="chatForm" class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Type query in any language..." autocomplete="off">
+      <button type="submit" class="btn-primary" style="padding: 8px 14px; border-radius: var(--radius-full);">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <h5 style="display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-compass" style="color: var(--accent);"></i> DISHA (दिशा)
+        </h5>
+        <p style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 16px;">
+          The Unified Digital Public Services Navigator & Multilingual Citizen AI Helpdesk. Enabling universal accessibility to civic entitlements across all regional dialects.
+        </p>
+        <div style="display: flex; gap: 12px; font-size: 1.1rem;">
+          <a href="#" style="color: #94a3b8;" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" style="color: #94a3b8;" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#" style="color: #94a3b8;" title="GitHub"><i class="fa-brands fa-github"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="#services">Vital Records</a></li>
+          <li><a href="#services">Utility Services</a></li>
+          <li><a href="#services">Electoral & Transport</a></li>
+          <li><a href="#tracker">Status Verification</a></li>
+          <li><a href="#dataset">Dataset Explorer</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Official Portals</h5>
+        <ul>
+          <li><a href="https://crsorgi.gov.in" target="_blank" rel="noopener">Civil Registration (CRS)</a></li>
+          <li><a href="https://passportindia.gov.in" target="_blank" rel="noopener">Passport Seva</a></li>
+          <li><a href="https://parivahan.gov.in" target="_blank" rel="noopener">Sarathi Parivahan</a></li>
+          <li><a href="https://voters.eci.gov.in" target="_blank" rel="noopener">ECI Voters Portal</a></li>
+          <li><a href="https://pgportal.gov.in" target="_blank" rel="noopener">CPGRAMS Grievance</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>National Helplines</h5>
+        <ul>
+          <li><strong>Citizen Helpline:</strong> 1800-11-4000</li>
+          <li><strong>National Emergency:</strong> 112</li>
+          <li><strong>Women Helpline:</strong> 1091</li>
+          <li><strong>Disaster Relief:</strong> 1070</li>
+          <li><strong>Cyber Crime:</strong> 1930</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 DISHA Citizen Tech Platform. Powered by Multilingual Natural Language Understanding.</div>
+      <div>Designed for universal access across Bharat & the Indian diaspora.</div>
+    </div>
+  </footer>
+
+  <!-- Client Application Script -->
+  <script src="js/app.js"></script>
+</body>
+</html>
